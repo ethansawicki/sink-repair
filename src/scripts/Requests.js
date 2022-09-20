@@ -6,54 +6,59 @@ mainContainer.addEventListener("click", click => {
     if(click.target.id.startsWith("request--")) {
         const [,requestId] = click.target.id.split("--")
         deleteRequest(parseInt(requestId))
-    }
+    } 
 })
 
 mainContainer.addEventListener(
     "change",
     (event) => {
-        if (event.target.id === "plumbers") {
-            const [requestId, plumberId, requestDescription] = event.target.value.split("--")
-            const request = parseInt(requestId)
+        const [requestId, plumberId, requestDescription] = event.target.value.split("--")
+            const requestToCompleted = parseInt(requestId)
             const plumber = parseInt(plumberId)
             const description = requestDescription
             const date = Date.now()
             const completion = {
-                requestId: request,
+                requestId: requestToCompleted,
                 plumberId: plumber,
                 description: description,
                 completed: true,
                 date_created: date
             }
+        if (event.target.id === "plumbers") {
             saveCompletion(completion)
         }
     }
 )
 
-const listRequests = (request) => {
+const listPlumbers = (request) => {
     const plumbers = getPlumbers()
-    const completion = getCompletions()
-    let html = ``
+    let html = `<select class="plumbers" id="plumbers">
+    <option value="">Choose</option>
+    ${
+        plumbers.map(
+            plumber => {
+                return `<option value="${request.id}--${plumber.id}--${request.description}">${plumber.name}</option>`
+            }
+        ).join("")}
+    </select>`
+    return html
+}
 
+const listRequests = (request) => {
+    const plumberRender = listPlumbers(request)
+    let html = ``
     if(request.completed === false) {
         html += `<li>
         ${request.description}
-        <select class="plumbers" id="plumbers">
-            <option value="">Choose</option>
-            ${
-                plumbers.map(
-                    plumber => {
-                        return `<option value="${request.id}--${plumber.id}--${request.description}">${plumber.name}</option>`
-                    }
-                ).join("")
-            }
-        </select>
+        ${plumberRender}
         <button class="request__delete" id="request--${request.id}">Delete</button>
-    </li>`
+        </li>`
     } else {
-        html += `<li>${completion.map()}`
+        html += `<li>
+        ${request.description}
+        <button class="request__delete" id="request--${request.id}">Delete</button>
+        </li>`
     }
-    
     return html
 }
 
@@ -63,10 +68,11 @@ Is it because its a callback? No idea bro
 */
 export const Requests = () => {
     const requests = getRequests()
-    const completed = getCompletions()
+    const completions = getCompletions()
     let html = `
-        <ul>
+        <ul class="pending__requests">
             ${requests.map(listRequests).join("")}
+            ${completions.map(listRequests).join("")}
         </ul>
     `
     return html

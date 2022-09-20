@@ -65,7 +65,8 @@ export const getCompletions = () => {
 }
 
 export const getRequests = () => {
-    return applicationState.requests.map(state => ({...state}))
+   const requestSort = applicationState.requests.sort((a, b) => {return a - b})
+    return requestSort.map(state => ({...state}))
 }
 
 export const getPlumbers = () => {
