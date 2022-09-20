@@ -9,7 +9,7 @@ const API = "http://localhost:8088"
 export const fetchRequests = async () => {
     const dataFetch = await fetch(`${API}/requests`)
     const jsonData = await dataFetch.json()
-    applicationState.requests = jsonData // in example this was serviceRequests but didnt make sense
+    applicationState.requests = jsonData 
 }
 
 export const fetchPlumbers = async () => {
