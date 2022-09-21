@@ -13,7 +13,7 @@ mainContainer.addEventListener("click", clickEvent => {
         const dataToSendToAPI = {
             description: userDescription,
             address: userAddress,
-            budget: userBudget,
+            budget: parseInt(userBudget),
             neededBy: userDate,
             completed: false
         }

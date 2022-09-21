@@ -47,8 +47,23 @@ export const saveCompletion = async (data) => {
         },
         body: JSON.stringify(data)
     }
-    const mainContainer = document.querySelector('#container')
     const response = await fetch(`${API}/completions`, fetchOptions)
+    const responseJson = await response.json()
+    return responseJson
+}
+
+export const statusChange = async (id) => {
+    const fetchOptions = {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            completed: true
+        })
+    }
+    const mainContainer = document.querySelector('#container')
+    const response = await fetch(`${API}/requests/${id}`, fetchOptions)
     const responseJson = await response.json()
     mainContainer.dispatchEvent(new CustomEvent("stateChanged"))
     return responseJson
@@ -65,7 +80,7 @@ export const getCompletions = () => {
 }
 
 export const getRequests = () => {
-   const requestSort = applicationState.requests.sort((a, b) => {return a - b})
+   const requestSort = applicationState.requests.sort((requestA, requestB) => {return requestA.completed - requestB.completed})
     return requestSort.map(state => ({...state}))
 }
 

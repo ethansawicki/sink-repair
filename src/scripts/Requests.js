@@ -1,4 +1,4 @@
-import { deleteRequest, getCompletions, getPlumbers, getRequests, saveCompletion } from "./dataAccess.js";
+import { deleteRequest, getCompletions, getPlumbers, getRequests, saveCompletion, statusChange } from "./dataAccess.js";
 
 const mainContainer = document.querySelector('#container')
 
@@ -12,20 +12,19 @@ mainContainer.addEventListener("click", click => {
 mainContainer.addEventListener(
     "change",
     (event) => {
-        const [requestId, plumberId, requestDescription] = event.target.value.split("--")
+        const [requestId, plumberId] = event.target.value.split("--")
             const requestToCompleted = parseInt(requestId)
             const plumber = parseInt(plumberId)
-            const description = requestDescription
             const date = Date.now()
             const completion = {
                 requestId: requestToCompleted,
                 plumberId: plumber,
-                description: description,
                 completed: true,
                 date_created: date
             }
         if (event.target.id === "plumbers") {
             saveCompletion(completion)
+            statusChange(requestId)
         }
     }
 )
@@ -34,10 +33,9 @@ const listPlumbers = (request) => {
     const plumbers = getPlumbers()
     let html = `<select class="plumbers" id="plumbers">
     <option value="">Choose</option>
-    ${
-        plumbers.map(
+    ${plumbers.map(
             plumber => {
-                return `<option value="${request.id}--${plumber.id}--${request.description}">${plumber.name}</option>`
+                return `<option value="${request.id}--${plumber.id}">${plumber.name}</option>`
             }
         ).join("")}
     </select>`
@@ -48,17 +46,16 @@ const listRequests = (request) => {
     const plumberRender = listPlumbers(request)
     let html = ``
     if(request.completed === false) {
-        html += `<li>
+        html += `<li class="list__requests">
         ${request.description}
         ${plumberRender}
-        <button class="request__delete" id="request--${request.id}">Delete</button>
         </li>`
     } else {
-        html += `<li>
+        html += `<li class="completed__requests">
         ${request.description}
-        <button class="request__delete" id="request--${request.id}">Delete</button>
         </li>`
     }
+    html += `<button class="request__delete" id="request--${request.id}">Delete</button>`
     return html
 }
 
@@ -68,12 +65,10 @@ Is it because its a callback? No idea bro
 */
 export const Requests = () => {
     const requests = getRequests()
-    const completions = getCompletions()
-    let html = `
+    let html = `<div class="request-list">
         <ul class="pending__requests">
             ${requests.map(listRequests).join("")}
-            ${completions.map(listRequests).join("")}
-        </ul>
+        </ul></div>
     `
     return html
 }

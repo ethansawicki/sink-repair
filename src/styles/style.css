@@ -17,3 +17,26 @@
     font-size: 18px;
     font-weight: bold;
 }
+
+.request-list {
+    display: flex;
+    flex-flow: column;
+}
+
+ul {
+    display: flex;
+    flex-flow: column;
+}
+
+.completed__requests {
+    flex-direction: column;
+    background-color: greenyellow;
+    color:black;
+    width: fit-content;
+}
+
+.request__delete {
+    background-color: red;
+    color: white;
+    max-width: 75px;
+}
